@@ -5,13 +5,16 @@ import fgPath from '../assets/s6/手腳畫面/6-右手大拇指.png';
 import ballPath from '../assets/s6/手腳畫面/巫珠.png';
 import stickPath from '../assets/s6/手腳畫面/竹管.png'
 const countdownPath = import.meta.glob("./assets/s6/倒數畫面/*");
+import ArdSerial from '../ArdSerial'
+
+
 
 export default class S6 {
     
-
     constructor(p) {
         this.p = p;
         this.boxes = [];
+        this.ard = new ArdSerial();
     }
 
     preload = () => {
@@ -48,7 +51,6 @@ export default class S6 {
 
         this.resizeImgs();
 
-
         this.engine = Engine.create();
         this.world = this.engine.world
 
@@ -56,10 +58,16 @@ export default class S6 {
         this.setupWall();
         this.stickBody = this.newRectImgBody(this.stick, 0, 0, this.stickSize.w, this.stickSize.h);
         this.ballBody = this.newRectImgBody(this.ball, 0, -this.bgSize.h/5, this.ballSize.w, this.ballSize.h, false);
-        console.log(this.ballBody.id);
-        console.log(this.ground.id);
-
+        this.stickBody.friction = 0.002;
+        this.ballBody.friction = 0.002;
+        //this.ballBody.frictionAir = 0.01;
+        this.ballBody.frictionStatic = 0;
+        //console.log(this.ballBody.id);
+        //console.log(this.ground.id);
+        this.engine.gravity.scale = 0.01;
         Matter.Events.on(this.engine, 'collisionStart', this.collideDetect)
+
+        this.start();
     }
 
     collideDetect = (event) => {
@@ -69,17 +77,35 @@ export default class S6 {
             toGround |= (pair.bodyB.id == this.ballBody.id && pair.bodyA.id == this.ground.id);
             if (toGround) {
                 console.log('to Ground!');
+                this.stop();
                 break;
             }
         }
     }
 
+    start = () => {
+        this.s = true;
+        //this.reader.read().then(this.gyrodata);
+    }
+
+
+    stop = () => {
+        this.s = false;
+    }
+
     draw = () => {
+        
         let p = this.p;
 
         p.drawBg(this.bg, this.bgSize);
+
         
-        Matter.Body.rotate(this.stickBody, 0.01);
+        let a = this.ard.getGyro() / 180 * Math.PI;
+        //console.log(a);
+        //Matter.Body.setAngle(this.stickBody, a);
+        //Matter.Body.setAngle(this.stickBody, Math.floor(this.ard.getGyro()));
+        let angle = a - this.stickBody.angle;
+        Matter.Body.rotate(this.stickBody, angle);
         this.stickBody.show(p);
         this.ballBody.show(p);
 
@@ -87,6 +113,8 @@ export default class S6 {
 
         // this.boxes.push(this.Box(200, -p.height, 10, 10));
         // this.boxes.forEach((b) => {b.show(p)});
+       //this.reader.read().then(this.gyrodata);
+       
     }
 
     relPosSave = (x, y) => {
