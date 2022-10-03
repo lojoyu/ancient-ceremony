@@ -7,6 +7,8 @@ import bgpat2 from './assets/game/BG 02.png';
 import logo from './assets/game/LOGO.png';
 import btn1 from './assets/game/Start button 01.png';
 import btn2 from './assets/game/Start button 02.png';
+import btn3 from './assets/game/FB share.png';
+import organizors from './assets/game/Organizers.png';
 
 export default function sketch(p) {
 
@@ -21,6 +23,7 @@ export default function sketch(p) {
     let logoImg;
     let btnImg = [];
     let btns = [];
+    let orgImg;
 
     p.preload = () => {
         console.log(fontPath, p.loadFont);
@@ -38,31 +41,33 @@ export default function sketch(p) {
         bgpatImg.push(p.loadImage(bgpat2));
         btnImg.push(p.loadImage(btn1));
         btnImg.push(p.loadImage(btn2));
+        btnImg.push(p.loadImage(btn3));
         logoImg = p.loadImage(logo);
+        orgImg = p.loadImage(organizors);
 
     }
 
     p.nextLevel = () => {
         //level += 1;
-        if (level < 3) {
-            level += 1;
+        level += 1;
 
-            if (level == 1) {
-                c2 = p.color(0, 0, 40);
-                c1 = p.color(127, 127, 183);
-            } else if (level == 2) {
-                c2 = p.color(71, 0, 0)
-                c1 = p.color(248, 138, 91)
-            } else if (level == 3) {
-                c2 = p.color(52, 57, 18)
-                c1 = p.color(175, 194, 61)
-            }
-            p.setGradient(0, 0, p.width/2, p.height, c1, c2);
-            p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
-            scenes[level].start();
-            
+        if (level == 1) {
+            c2 = p.color(0, 0, 40);
+            c1 = p.color(127, 127, 183);
+        } else if (level == 2) {
+            c2 = p.color(71, 0, 0)
+            c1 = p.color(248, 138, 91)
+        } else if (level == 3) {
+            c2 = p.color(52, 57, 18)
+            c1 = p.color(175, 194, 61)
+        } else if (level == 4) {
+            c2 = p.color(52, 57, 18)
+            c1 = p.color(175, 194, 61)
         }
+        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
+        p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
 
+        if (level < 4 && level > 0)scenes[level-1].start();
         
     }
 
@@ -91,7 +96,9 @@ export default function sketch(p) {
         bgpatImg[1].loadPixels();
         btnImg[0].loadPixels();
         btnImg[1].loadPixels();
+        btnImg[2].loadPixels();
         logoImg.loadPixels();
+        orgImg.loadPixels();
 
         for (let i=0; i<btnImg.length; i++) {
             btns.push(new Button(p, 0, 0, 0, 0, btnImg[i]));
@@ -103,8 +110,33 @@ export default function sketch(p) {
         p.imageMode(p.CENTER);
         p.image(pg, p.width/2, p.height/2, p.width, p.height);
 
+        if (level == 4) {
+            let size = p.calculateImgScale2(bgpatImg[0], p.width, p.height);
+            p.image(bgpatImg[0], p.width/2, p.height/2, size.w, size.h);
+            p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
+
+            let title_text = "禮器配對挑戰";
+            let challenge_suc_text = "挑戰成功！";
+            let challenge_fail_text = "挑戰失敗。";
+            let content_text = "你真棒！成為南島禮儀的小達人，順利完成配對任務。\n歡迎點擊按鈕分享展覽資訊，一起認識南島的禮儀文化！";
+            
+            p.textSize(p.height / 15);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.fill(255);
+            p.text(title_text, p.width/2, p.height/5);
+            p.textSize(p.height/8);
+            p.text(challenge_suc_text, p.width/2, p.height/2.8);
+            p.textSize(p.height/30);
+            p.text(content_text, p.width/2, p.height/1.8);
+
+            let btnsize = p.calculateImgScale(btnImg[2], p.width, p.height/6);
+            btns[2].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+
+            let orgSize = p.calculateImgScale(orgImg, p.width/1.5, p.height/1.8);
+            p.image(orgImg, p.width/2, p.height-p.height/9, orgSize.w, orgSize.h);
+        }
         //draw scenes
-        if (level > 0) {
+        else if (level > 0) {
             scenes[level-1].draw();
         }
         else if (level == -1) {
@@ -141,9 +173,7 @@ export default function sketch(p) {
             btns[1].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
 
         }
-        else if (level == 4) {
-            
-        }
+
         // p5.image(bg, -p.width/2., -p.height/2.);
         // p.background(200);
         // p.normalMaterial();
