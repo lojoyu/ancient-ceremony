@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <script src="node_modules/p5.play/p5.play.js"></script> -->
+    <style>
+    .loader {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      position: fixed;
+      left: calc(50% - 24px);
+      /* transform: 'translate(-50%, -0%)'; */
+      animation: rotate 1s linear infinite
+    }
+    .loader::before {
+      content: "";
+      box-sizing: border-box;
+      position: absolute;
+      inset: 0px;
+      border-radius: 50%;
+      border: 5px solid #FFF;
+      animation: prixClipFix 2s linear infinite ;
+    }
+
+    @keyframes rotate {
+      100%   {transform: rotate(360deg)}
+    }
+
+    @keyframes prixClipFix {
+        0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+        25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+        50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+        75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+        100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
+    }
+    </style>
+  
+  
+    <title>古代南島禮器特展</title>
+    <script type="module" crossorigin src="/ancient-ceremony/assets/index.05294a45.js"></script>
+    <link rel="stylesheet" href="/ancient-ceremony/assets/index.a8ba5092.css">
+  </head>
+  <body>
+    <div id="p5_loading" >
+      <span class="loader"></span>
+    </div>
+
+    <div id="root"></div>
+    
+  </body>
+</html>
