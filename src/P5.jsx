@@ -13,6 +13,7 @@ import sketch from './P5Canvas.js';
 
 
 const ItemContainer = styled.div`
+  position: fixed;
   height: 100vh;
   width: 100%;
 `

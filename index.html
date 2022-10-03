@@ -5,9 +5,46 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- <script src="node_modules/p5.play/p5.play.js"></script> -->
+    <style>
+    .loader {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      position: fixed;
+      left: 50%;
+      animation: rotate 1s linear infinite
+    }
+    .loader::before {
+      content: "";
+      box-sizing: border-box;
+      position: absolute;
+      inset: 0px;
+      border-radius: 50%;
+      border: 5px solid #FFF;
+      animation: prixClipFix 2s linear infinite ;
+    }
+
+    @keyframes rotate {
+      100%   {transform: rotate(360deg)}
+    }
+
+    @keyframes prixClipFix {
+        0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+        25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+        50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+        75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+        100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
+    }
+    </style>
+  
+  
     <title>Vite + React</title>
   </head>
   <body>
+    <div id="p5_loading" >
+      <span class="loader"></span>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
