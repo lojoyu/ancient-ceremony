@@ -116,20 +116,42 @@ export default function sketch(p) {
         if (level > 0) {
             scenes[level-1].draw();
         }
-        else {
-            //p.image(pg, 0, 0, p.width, p.height);
+        else if (level == -1) {
+             //p.image(pg, 0, 0, p.width, p.height);
+             let size = p.calculateImgScale2(bgpatImg[0], p.width, p.height);
+             p.image(bgpatImg[0], p.width/2, p.height/2, size.w, size.h);
+             p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
+             //console.log(logoImg);
+             let logosize = p.calculateImgScale(logoImg, p.width, p.height/1.8);
+             p.image(logoImg, p.width/2, p.height/2-logosize.h/4, logosize.w, logosize.h);
+             
+             let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
+             //p.image(btnImg[0])
+             //console.log(btns);
+             btns[0].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+        }
+        else if (level == 0) {
+
             let size = p.calculateImgScale2(bgpatImg[0], p.width, p.height);
             p.image(bgpatImg[0], p.width/2, p.height/2, size.w, size.h);
             p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
-            //console.log(logoImg);
-            let logosize = p.calculateImgScale(logoImg, p.width, p.height/1.8);
-            p.image(logoImg, p.width/2, p.height/2-logosize.h/4, logosize.w, logosize.h);
-            
-            let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
-            //p.image(btnImg[0])
-            //console.log(btns);
-            btns[0].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
 
+            let title_text = "遊戲說明";
+            let content_text = "南島語族是注重禮儀的人群，\n「禮器」即是儀式中使用物\n品，也傳達了南島文化最深層\n的一面。快來挑戰你對南島禮\n器的認識吧！";
+            
+            p.textSize(p.height / 15);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.fill(255, 255, 255);
+            p.text(title_text, p.width/2, p.height/5);
+            p.textSize(p.height/30);
+            p.text(content_text, p.width/2, p.height/2.5);
+
+            let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
+            btns[1].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+
+        }
+        else if (level == 4) {
+            
         }
         // p5.image(bg, -p.width/2., -p.height/2.);
         // p.background(200);
@@ -143,8 +165,8 @@ export default function sketch(p) {
         
     };
 
-    p.mousePressed = () => {
-        // console.log("Canvas mouse!")
+    p.mouseClicked = () => {
+        console.log("Canvas mouse!")
         if (level == -1) {
             if(btns[0].over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
         }

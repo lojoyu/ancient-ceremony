@@ -83,9 +83,9 @@ export default class game {
         p.fill(255);
         p.textSize(p.height / 15);
         p.textAlign(p.LEFT, p.CENTER);
-        p.text(this.title, p.width/5, p.height/10);
+        p.text(this.title, p.width/10, p.height/10);
         p.textAlign(p.RIGHT, p.CENTER);
-        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/5, p.height/10);
+        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/10, p.height/10);
         p.textSize(p.height / 20);
         p.textAlign(p.CENTER, p.CENTER);
         p.text(this.desc, p.width/2, p.height - p.height/10);
