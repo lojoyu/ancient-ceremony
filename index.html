@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- <script src="node_modules/p5.play/p5.play.js"></script> -->
     <style>
@@ -11,7 +11,8 @@
       height: 48px;
       border-radius: 50%;
       position: fixed;
-      left: 50%;
+      left: calc(50% - 24px);
+      /* transform: 'translate(-50%, -0%)'; */
       animation: rotate 1s linear infinite
     }
     .loader::before {
@@ -38,7 +39,7 @@
     </style>
   
   
-    <title>Vite + React</title>
+    <title>古代南島禮器特展</title>
   </head>
   <body>
     <div id="p5_loading" >

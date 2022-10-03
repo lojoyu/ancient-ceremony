@@ -30,7 +30,7 @@ export default function sketch(p) {
         scenes.push(new game(p, p.nextLevel, 1, '第一關  成年之禮', '請配對出南島語族成年禮使用的器物'))
         scenes.push(new game(p, p.nextLevel, 2, '第二關  交誼之禮', '請配對出南島語族貿易及交換的器物'))
         scenes.push(new game(p, p.nextLevel, 3, '第三關  心靈之禮', '請配對出南島語族占卜祭祀的器物'))
-        for (let i =0; i<3; i++) {
+        for (let i=0; i<3; i++) {
             scenes[i].preload();
         }
         
@@ -45,9 +45,9 @@ export default function sketch(p) {
 
     p.nextLevel = () => {
         //level += 1;
-        if (level < 3) {
+        if (level < 4) {
+            if (level >= 0 && level < 3) scenes[level].start();
             level += 1;
-
             if (level == 1) {
                 c2 = p.color(0, 0, 40);
                 c1 = p.color(127, 127, 183);
@@ -60,7 +60,6 @@ export default function sketch(p) {
             }
             p.setGradient(0, 0, p.width/2, p.height, c1, c2);
             p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
-            scenes[level].start();
             
         }
 
@@ -204,6 +203,10 @@ export default function sketch(p) {
             else toRotate = false;
             p.resizeCanvas(props.size.w, props.size.h);
             console.log(toRotate);
+            
+            if (level > 0 && level < 4) {
+                scenes[level-1].resize();
+            }
         }
     }
 

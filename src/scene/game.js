@@ -36,6 +36,7 @@ export default class game {
         else if (this.level == 3) c = 'C'
         
         for (let i=0; i<5; i++) {
+            
             this.cards.push(new card(p, `Chap ${level}/卡牌內容_${c}${i+1}.png`, i));
             this.cards.push(new card(p, `Chap ${level}/卡牌內容_${c}${i+1}1.png`, i));
         } 
@@ -44,22 +45,24 @@ export default class game {
 
     setup = () => {
         console.log('Game setup')
-        let p = this.p;
-        this.img_size = p.width/10;
-             
-    }
-
-    start = () => {
+        this.sucImg.loadPixels();
+        this.failImg.loadPixels();
         for (let i=0; i< this.back.length; i++){
             this.back[i].loadPixels();
         }
+    }
+
+    start = () => {
+        this.img_size = this.p.width/10;
+        this.posarray = []
+        
         for (let i=0; i< this.cards.length; i++){
+            this.posarray.push(i);
             this.cards[i].setBack(this.back[0]);
             this.cards[i].setup();
             this.cards[i].setSize(this.img_size);
         }
-        this.sucImg.loadPixels();
-        this.failImg.loadPixels();
+        
 
         this.setRandomCardPos(this.cards, this.img_size/1.8);   
         this.count = 60;
@@ -72,7 +75,6 @@ export default class game {
             this.cards[i].turnBack();
         }
     }
-
 
     draw = () => {
     
@@ -113,7 +115,17 @@ export default class game {
         }
     }
 
-    setRandomCardPos = (cards, distance) => {
+    resize = () => {
+        console.log('resize:', this.level, this.posarray)
+        this.img_size = this.p.width/10;
+        if (this.posarray) this.setRandomCardPos(this.cards, this.img_size/1.8, false)
+        for (let i=0; i< this.cards.length; i++){
+            this.cards[i].setSize(this.img_size);
+        }
+       
+    }
+
+    setRandomCardPos = (cards, distance, shuffle=true) => {
         let x = 0 + this.p.width/2;
         let y = (Math.sqrt(3)/2*distance) + this.p.height/2;
         let pos = [
@@ -128,9 +140,13 @@ export default class game {
                 [x+4.5*distance, y-(Math.sqrt(3)/2*distance)],
                 [x-4.5*distance, y-(Math.sqrt(3)/2*distance)]
             ]
-        this.shuffleArray(pos);
+        //this.shuffleArray(pos);
+        if (shuffle) {
+            this.shuffleArray(this.posarray);
+        }
+        console.log(this.posarray);
         for (let i=0; i< cards.length; i++){
-            cards[i].setPos(pos[i]);
+            cards[i].setPos(pos[this.posarray[i]]);
         }
         
         return pos;
@@ -149,7 +165,7 @@ export default class game {
         let cards = this.cards;
         let card_num;
         for (let i=0; i< cards.length; i++){
-            if (cards[i].checkIfChoosed(point, this.img_size/2)){
+            if (cards[i].checkIfChoosed(point)){
                 card_num = i;
                 console.log("Card no:" + card_num);
             }

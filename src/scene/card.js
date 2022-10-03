@@ -98,7 +98,7 @@ export default class card {
         this.isBack = true;
     }
 
-    checkIfChoosed = (point, radius) => {
+    checkIfChoosed = (point) => {
         if (!this.isBack) return false;
         return this.insidePolygon(point, this.vertexSet);
     }
