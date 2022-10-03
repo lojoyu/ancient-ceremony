@@ -21,6 +21,7 @@ export default function sketch(p) {
     let logoImg;
     let btnImg = [];
     let btns = [];
+    let toRotate = false;
 
     p.preload = () => {
         console.log(fontPath, p.loadFont);
@@ -100,6 +101,14 @@ export default function sketch(p) {
 
     p.draw = () => {
         p.clear();
+        if (toRotate) {
+            p.background(0);
+            p.textAlign(p.CENTER, p.CENTER);
+            p.fill(255);
+            p.textSize(p.width / 20);
+            p.text('請旋轉畫面以繼續遊戲', p.width/2, p.height/2);
+            return;
+        }
         p.imageMode(p.CENTER);
         p.image(pg, p.width/2, p.height/2, p.width, p.height);
 
@@ -169,8 +178,10 @@ export default function sketch(p) {
 
     p.updateWithProps = props => {
         if (props.size && props.size.w != 0 && props.size.h != 0) {
+            if (props.size.h > props.size.w) toRotate = true;
+            else toRotate = false;
             p.resizeCanvas(props.size.w, props.size.h);
-
+            console.log(toRotate);
         }
     }
 
