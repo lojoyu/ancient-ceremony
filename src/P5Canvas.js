@@ -1,6 +1,12 @@
 //import S6 from './scene/S6'
+import Button from './button';
 import game from './scene/game';
 import fontPath from './assets/SourceHanSansHWTC-VF.ttf'
+import bgpat1 from './assets/game/BG 01.png';
+import bgpat2 from './assets/game/BG 02.png';
+import logo from './assets/game/LOGO.png';
+import btn1 from './assets/game/Start button 01.png';
+import btn2 from './assets/game/Start button 02.png';
 
 export default function sketch(p) {
 
@@ -8,9 +14,13 @@ export default function sketch(p) {
     let snow = 0;
     let myFont;
     let pg;
-    let level = 1;
+    let level = -1;
     let c1 = p.color(255);
     let c2 = p.color(0);
+    let bgpatImg = [];
+    let logoImg;
+    let btnImg = [];
+    let btns = [];
 
     p.preload = () => {
         console.log(fontPath, p.loadFont);
@@ -22,15 +32,38 @@ export default function sketch(p) {
         for (let i =0; i<3; i++) {
             scenes[i].preload();
         }
-        level = 1;
+        
+
+        bgpatImg.push(p.loadImage(bgpat1));
+        bgpatImg.push(p.loadImage(bgpat2));
+        btnImg.push(p.loadImage(btn1));
+        btnImg.push(p.loadImage(btn2));
+        logoImg = p.loadImage(logo);
+
     }
 
     p.nextLevel = () => {
         //level += 1;
         if (level < 3) {
             level += 1;
+
+            if (level == 1) {
+                c2 = p.color(0, 0, 40);
+                c1 = p.color(127, 127, 183);
+            } else if (level == 2) {
+                c2 = p.color(71, 0, 0)
+                c1 = p.color(248, 138, 91)
+            } else if (level == 3) {
+                c2 = p.color(52, 57, 18)
+                c1 = p.color(175, 194, 61)
+            }
+            p.setGradient(0, 0, p.width/2, p.height, c1, c2);
+            p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
             scenes[level].start();
+            
         }
+
+        
     }
 
     p.setup = () => {
@@ -48,16 +81,47 @@ export default function sketch(p) {
 
         // p.setGradient(-p.width/2, -p.height/2, p.width/2, p.height, c1, c2);
         // p.setGradient(0, -p.height/2, p.width/2, p.height, c2, c1);
-        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
-        //p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
         
+        c2 = p.color(52, 57, 18)
+        c1 = p.color(175, 194, 61)
+        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
+        p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
+
+        bgpatImg[0].loadPixels();
+        bgpatImg[1].loadPixels();
+        btnImg[0].loadPixels();
+        btnImg[1].loadPixels();
+        logoImg.loadPixels();
+
+        for (let i=0; i<btnImg.length; i++) {
+            btns.push(new Button(p, 0, 0, 0, 0, btnImg[i]));
+        }
     }
 
     p.draw = () => {
-        //p.clear();
-        //p.image(pg, 0, 0, p.width, p.height);
+        p.clear();
+        p.imageMode(p.CENTER);
+        p.image(pg, p.width/2, p.height/2, p.width, p.height);
+
         //draw scenes
-        scenes[level-1].draw();
+        if (level > 0) {
+            scenes[level-1].draw();
+        }
+        else {
+            //p.image(pg, 0, 0, p.width, p.height);
+            let size = p.calculateImgScale2(bgpatImg[0], p.width, p.height);
+            p.image(bgpatImg[0], p.width/2, p.height/2, size.w, size.h);
+            p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
+            //console.log(logoImg);
+            let logosize = p.calculateImgScale(logoImg, p.width, p.height/1.8);
+            p.image(logoImg, p.width/2, p.height/2-logosize.h/4, logosize.w, logosize.h);
+            
+            let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
+            //p.image(btnImg[0])
+            //console.log(btns);
+            btns[0].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+
+        }
         // p5.image(bg, -p.width/2., -p.height/2.);
         // p.background(200);
         // p.normalMaterial();
@@ -72,7 +136,13 @@ export default function sketch(p) {
 
     p.mousePressed = () => {
         // console.log("Canvas mouse!")
-        if (scenes[level-1]) scenes[level-1].mousePressed();
+        if (level == -1) {
+            if(btns[0].over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
+        }
+        else if (level == 0) {
+            if(btns[1].over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
+        }
+        else if (scenes[level-1]) scenes[level-1].mousePressed();
     }
 
     p.resizeImgScale = (img, w, h) => {
@@ -85,6 +155,14 @@ export default function sketch(p) {
         let r = img.width/img.height;
         let nr = w/h;
         if (r > nr) { // sacrifice height
+            return({w: w, h: w/r, r: w/img.width});
+        } else return({w: h * r, h:h, r: h/img.height});
+    }
+
+    p.calculateImgScale2 = (img, w, h) => {
+        let r = img.width/img.height;
+        let nr = w/h;
+        if (r < nr) { // sacrifice height
             return({w: w, h: w/r, r: w/img.width});
         } else return({w: h * r, h:h, r: h/img.height});
     }

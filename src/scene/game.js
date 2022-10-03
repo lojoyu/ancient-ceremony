@@ -1,15 +1,4 @@
 import card from './card';
-import card1_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-圖1.png';
-import card2_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-圖2.png';
-import card3_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-圖3.png';
-import card4_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-圖4.png';
-import card5_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-文1.png';
-import card6_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-文2.png';
-import card7_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-文3.png';
-import card8_path from '../assets/game/card/南島有禮_線上遊戲0919_卡正面-文4.png';
-import card_back1_path from '../assets/game/card/南島有禮_線上遊戲0919_卡牌背面CH1.png';
-import card_back2_path from '../assets/game/card/南島有禮_線上遊戲0919_卡牌背面CH2.png';
-import card_back3_path from '../assets/game/card/南島有禮_線上遊戲0919_卡牌背面CH3.png';
 
 
 export default class game {
@@ -57,8 +46,10 @@ export default class game {
         console.log('Game setup')
         let p = this.p;
         this.img_size = p.width/10;
+             
+    }
 
-        
+    start = () => {
         for (let i=0; i< this.back.length; i++){
             this.back[i].loadPixels();
         }
@@ -69,13 +60,8 @@ export default class game {
         }
         this.sucImg.loadPixels();
         this.failImg.loadPixels();
-        this.setRandomCardPos(this.cards, this.img_size/1.8);
-        
-        this.start();
-        
-    }
 
-    start = () => {
+        this.setRandomCardPos(this.cards, this.img_size/1.8);   
         this.count = 60;
         this.prev = Date.now();
         this.card_cache = -1;
@@ -91,27 +77,26 @@ export default class game {
     draw = () => {
     
         let p = this.p;
-        
-
         for (let i=0; i< this.cards.length; i++){
             this.cards[i].draw();
         }
+        p.fill(255);
         p.textSize(p.height / 15);
         p.textAlign(p.LEFT, p.CENTER);
-        p.text(this.title, p.width/5 - p.width/2, p.height/10 - p.height/2);
+        p.text(this.title, p.width/5, p.height/10);
         p.textAlign(p.RIGHT, p.CENTER);
-        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width/2 - p.width/5, p.height/10 - p.height/2);
+        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/5, p.height/10);
         p.textSize(p.height / 20);
         p.textAlign(p.CENTER, p.CENTER);
-        p.text(this.desc, 0, p.height/2 - p.height/10);
+        p.text(this.desc, p.width/2, p.height - p.height/10);
 
         if (this.suc) {
             let size = p.calculateImgScale(this.sucImg, p.width/1.5, p.height/1.2);
-            p.image(this.sucImg, 0, 0, size.w, size.h);
+            p.image(this.sucImg, p.width/2, p.height/2, size.w, size.h);
             return;
         } else if (this.fail) {
             let size = p.calculateImgScale(this.failImg, p.width/1.5, p.height/1.2);
-            p.image(this.failImg, 0, 0, size.w, size.h);
+            p.image(this.failImg, p.width/2, p.height/2, size.w, size.h);
             return;
         }
 
@@ -129,8 +114,8 @@ export default class game {
     }
 
     setRandomCardPos = (cards, distance) => {
-        let x = 0;
-        let y = (Math.sqrt(3)/2*distance);
+        let x = 0 + this.p.width/2;
+        let y = (Math.sqrt(3)/2*distance) + this.p.height/2;
         let pos = [
                 [x,y], 
                 [x, y-(Math.sqrt(3)*distance)],
@@ -160,7 +145,7 @@ export default class game {
 
     mousePressed = () => {
         if (this.card_cache2 || this.suc || this.fail) return;
-        let point = [this.p.mouseX-this.p.width/2, this.p.mouseY-this.p.height/2];
+        let point = [this.p.mouseX, this.p.mouseY];
         let cards = this.cards;
         let card_num;
         for (let i=0; i< cards.length; i++){
