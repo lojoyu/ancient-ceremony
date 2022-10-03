@@ -63,11 +63,11 @@ export default function sketch(p) {
             c2 = p.color(52, 57, 18)
             c1 = p.color(175, 194, 61)
         } else if (level == 4) {
-            c2 = p.color(52, 57, 18)
+            c2 = p.color(20, 23, 19)
             c1 = p.color(175, 194, 61)
         }
-        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
-        p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
+        p.setGradient(0, 0, p.width/2, p.height, c1, c2, true);
+        p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1, false);
 
         if (level < 4 && level > 0) scenes[level-1].start();
         
@@ -89,7 +89,7 @@ export default function sketch(p) {
         // p.setGradient(-p.width/2, -p.height/2, p.width/2, p.height, c1, c2);
         // p.setGradient(0, -p.height/2, p.width/2, p.height, c2, c1);
         
-        c2 = p.color(52, 57, 18)
+        c2 = p.color(20, 23, 19)
         c1 = p.color(175, 194, 61)
         p.setGradient(0, 0, p.width/2, p.height, c1, c2);
         p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
@@ -170,13 +170,14 @@ export default function sketch(p) {
             p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
 
             let title_text = "遊戲說明";
-            let content_text = "南島語族是注重禮儀的人群，\n「禮器」即是儀式中使用物\n品，也傳達了南島文化最深層\n的一面。快來挑戰你對南島禮\n器的認識吧！";
+            let content_text = "南島語族是注重禮儀的人群，「禮器」是儀式中\n使用的物品，也傳達了南島文化最深層的一面。\n快來挑戰你對南島禮器的認識吧！";
             
             p.textSize(p.height / 15);
             p.textAlign(p.CENTER, p.CENTER);
             p.fill(255, 255, 255);
             p.text(title_text, p.width/2, p.height/5);
-            p.textSize(p.height/30);
+            p.textSize(p.height / 25);
+            p.textLeading(p.height / 15);
             p.text(content_text, p.width/2, p.height/2.5);
 
             let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
@@ -262,7 +263,7 @@ export default function sketch(p) {
     }
 
 
-    p.setGradient = (x, y, w, h, c1, c2) => {
+    p.setGradient = (x, y, w, h, c1, c2, up=true) => {
         pg.noFill();
     
         for (let i = x; i <= x + w; i++) {

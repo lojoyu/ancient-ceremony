@@ -83,14 +83,16 @@ export default class game {
             this.cards[i].draw();
         }
         p.fill(255);
-        p.textSize(p.height / 15);
-        p.textAlign(p.LEFT, p.CENTER);
-        p.text(this.title, p.width/10, p.height/10);
-        p.textAlign(p.RIGHT, p.CENTER);
-        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/10, p.height/10);
         p.textSize(p.height / 20);
+        p.textAlign(p.LEFT, p.CENTER);
+        p.text(this.title, p.width/7, p.height/7);
+
+        p.textAlign(p.RIGHT, p.CENTER);
+        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/7, p.height/7);
+
+        p.textSize(p.height / 30);
         p.textAlign(p.CENTER, p.CENTER);
-        p.text(this.desc, p.width/2, p.height - p.height/10);
+        p.text(this.desc, p.width/2, p.height - p.height/7);
 
         if (this.suc) {
             let size = p.calculateImgScale(this.sucImg, p.width/1.5, p.height/1.2);
