@@ -31,6 +31,7 @@ export function P5() {
 
     useEffect(resized, [])
     useEffect(() => {
+        console.log('resize')
         window.addEventListener('resize', resized);
         return () => window.removeEventListener('resize', resized);
     });

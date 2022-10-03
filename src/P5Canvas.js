@@ -1,32 +1,64 @@
-import S6 from './scene/S6'
+//import S6 from './scene/S6'
+import game from './scene/game';
+import fontPath from './assets/SourceHanSansHWTC-VF.ttf'
 
 export default function sketch(p) {
 
     let scenes = [];
     let snow = 0;
+    let myFont;
+    let pg;
+    let level = 1;
+    let c1 = p.color(255);
+    let c2 = p.color(0);
 
     p.preload = () => {
+        console.log(fontPath, p.loadFont);
+        myFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff');
         //preload scenes
-        scenes = [new S6(p)];
-        scenes[snow].preload();
+        scenes.push(new game(p, p.nextLevel, 1, '第一關  成年之禮', '請配對出南島語族成年禮使用的器物'))
+        scenes.push(new game(p, p.nextLevel, 2, '第二關  交誼之禮', '請配對出南島語族貿易及交換的器物'))
+        scenes.push(new game(p, p.nextLevel, 3, '第三關  心靈之禮', '請配對出南島語族占卜祭祀的器物'))
+        for (let i =0; i<3; i++) {
+            scenes[i].preload();
+        }
+        level = 1;
+    }
 
-        
+    p.nextLevel = () => {
+        //level += 1;
+        if (level < 3) {
+            level += 1;
+            scenes[level].start();
+        }
     }
 
     p.setup = () => {
         
-        p.createCanvas(p.windowWidth, p.windowHeight, p.WEBGL);
+        p.createCanvas(p.windowWidth, p.windowHeight);
         //setup scenes
-        scenes[snow].setup();
+        for (let i =0; i<3; i++) {
+            scenes[i].setup();
+        }
 
+        p.textFont(myFont);
+        p.textSize(p.height / 15);
+        p.textAlign(p.LEFT, p.CENTER);
+        pg = p.createGraphics(p.windowWidth, p.windowHeight);
+
+        // p.setGradient(-p.width/2, -p.height/2, p.width/2, p.height, c1, c2);
+        // p.setGradient(0, -p.height/2, p.width/2, p.height, c2, c1);
+        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
+        //p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
         
     }
 
     p.draw = () => {
-        p.clear();
+        //p.clear();
+        //p.image(pg, 0, 0, p.width, p.height);
         //draw scenes
-        scenes[snow].draw();
-      //  p5.image(bg, -p.width/2., -p.height/2.);
+        scenes[level-1].draw();
+        // p5.image(bg, -p.width/2., -p.height/2.);
         // p.background(200);
         // p.normalMaterial();
         // p.push();
@@ -37,6 +69,11 @@ export default function sketch(p) {
         // p.pop();
         
     };
+
+    p.mousePressed = () => {
+        // console.log("Canvas mouse!")
+        if (scenes[level-1]) scenes[level-1].mousePressed();
+    }
 
     p.resizeImgScale = (img, w, h) => {
         let size = p.calculateImgScale(img, w, h);
@@ -54,14 +91,7 @@ export default function sketch(p) {
 
     p.updateWithProps = props => {
         if (props.size && props.size.w != 0 && props.size.h != 0) {
-            if (scenes[snow]) {
-                scenes[snow].beforeResize();
-            }
             p.resizeCanvas(props.size.w, props.size.h);
-
-            if (scenes[snow]) {
-                scenes[snow].afterResize();
-            }
 
         }
     }
@@ -84,5 +114,21 @@ export default function sketch(p) {
         if (p.width == 0 || p.height == 0) return;
         return {x: percentX * p.width, y: percentY * p.height}
     }
+
+
+    p.setGradient = (x, y, w, h, c1, c2) => {
+        pg.noFill();
+    
+        for (let i = x; i <= x + w; i++) {
+            let inter = p.map(i, x, x + w, 0, 1);
+            let c = p.lerpColor(c1, c2, inter);
+            pg.stroke(c);
+            // p.noStroke();
+            // p.fill(c);
+            // p.rect(i, y + h/2, 0.1, h);
+            pg.line(i, y, i, y + h);
+        }
+    }
+  
     
 }

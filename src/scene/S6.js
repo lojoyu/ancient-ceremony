@@ -56,7 +56,7 @@ export default class S6 {
 
         Runner.run(this.engine)
         this.setupWall();
-        this.stickBody = this.newRectImgBody(this.stick, 0, 0, this.stickSize.w, this.stickSize.h);
+        this.stickBody = this.newRectImgBody(this.stick, 0, -this.bgSize.h/7, this.stickSize.w, this.stickSize.h);
         this.ballBody = this.newRectImgBody(this.ball, 0, -this.bgSize.h/5, this.ballSize.w, this.ballSize.h, false);
         this.stickBody.friction = 0.002;
         this.ballBody.friction = 0.002;
@@ -64,7 +64,7 @@ export default class S6 {
         this.ballBody.frictionStatic = 0;
         //console.log(this.ballBody.id);
         //console.log(this.ground.id);
-        this.engine.gravity.scale = 0.01;
+        this.engine.gravity.scale = 0.005;
         Matter.Events.on(this.engine, 'collisionStart', this.collideDetect)
 
         this.start();
@@ -100,7 +100,7 @@ export default class S6 {
         p.drawBg(this.bg, this.bgSize);
 
         
-        let a = this.ard.getGyro() / 180 * Math.PI;
+        let a = Math.floor(this.ard.getGyro()) / 180 * Math.PI;
         //console.log(a);
         //Matter.Body.setAngle(this.stickBody, a);
         //Matter.Body.setAngle(this.stickBody, Math.floor(this.ard.getGyro()));
@@ -115,6 +115,11 @@ export default class S6 {
         // this.boxes.forEach((b) => {b.show(p)});
        //this.reader.read().then(this.gyrodata);
        
+    }
+
+    mousePressed = () => {
+        console.log('y');
+        Matter.Body.setPosition(this.ballBody, {x: 0, y:-this.bgSize.h/5});
     }
 
     relPosSave = (x, y) => {
@@ -153,7 +158,7 @@ export default class S6 {
         let r = 0;
         if (this.stickSize) {
             r = this.stickSize.w / this.stickSize.h;
-            this.stickSize = {w: this.bgSize.w/1.5, h: this.bgSize.w/(1.5*r)};
+            this.stickSize = {w: this.bgSize.w/2.5, h: this.bgSize.w/(2.5*r)};
         }
         if (this.ballSize) {
             r = this.ballSize.w / this.ballSize.h;        
@@ -220,7 +225,7 @@ export default class S6 {
         return this.body;
     }
 
-    newRectImgBody = (img, x, y, w, h, isStatic=true, offset={w: 0, h: 0}) => {
+    newRectImgBody = (img, x, y, w, h, isStatic=true, offset={w: 0, h: -10}) => {
         let body = Matter.Bodies.rectangle(x, y, w+offset.w, h+offset.h, {isStatic: isStatic})
         Matter.World.add(this.world, body)
         body.w = w
@@ -234,8 +239,9 @@ export default class S6 {
             p.push()
             p.translate(pos.x, pos.y)
             p.rotate(angle)
-            p.rectMode(p.CENTER)
-            p.rect(0, 0, this.w, this.h);
+            // p.rectMode(p.CENTER)
+            // p.rect(0, 0, this.w, this.h);
+
             p.imageMode(p.CENTER);
             p.image(this.img, 0, 0, this.w, this.h);
             
