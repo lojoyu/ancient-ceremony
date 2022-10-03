@@ -235,6 +235,10 @@ export default function sketch(p) {
             if (props.size.h > props.size.w) toRotate = true;
             else toRotate = false;
             p.resizeCanvas(props.size.w, props.size.h);
+            var newPG = p.createGraphics(props.size.w, props.size.h);
+            pg = newPG;
+            p.setGradient(0, 0, props.size.w/2, props.size.h, c1, c2, true);
+            p.setGradient(props.size.w/2, 0, props.size.w/2, props.size.h, c2, c1, false);
             console.log(toRotate);
             
             if (level > 0 && level < 4) {
@@ -264,6 +268,7 @@ export default function sketch(p) {
 
 
     p.setGradient = (x, y, w, h, c1, c2, up=true) => {
+        if (!pg) return; 
         pg.noFill();
     
         for (let i = x; i <= x + w; i++) {
