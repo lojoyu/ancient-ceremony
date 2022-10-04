@@ -53,7 +53,7 @@ export default class game {
     }
 
     start = () => {
-        this.img_size = this.p.width/10;
+        this.img_size = this.p.width/6.5;
         this.posarray = []
         
         for (let i=0; i< this.cards.length; i++){
@@ -64,7 +64,7 @@ export default class game {
         }
         
 
-        this.setRandomCardPos(this.cards, this.img_size/1.8);   
+        this.setRandomCardPos(this.cards, this.img_size/1.9);   
         this.count = 60;
         this.prev = Date.now();
         this.card_cache = -1;
@@ -83,23 +83,24 @@ export default class game {
             this.cards[i].draw();
         }
         p.fill(255);
-        p.textSize(p.height / 20);
-        p.textAlign(p.LEFT, p.CENTER);
-        p.text(this.title, p.width/7, p.height/7);
+        p.textSize(p.height / 18);
+        p.textAlign(p.LEFT, p.TOP);
+        p.text(this.title, p.width/15, p.height/8.5);
 
-        p.textAlign(p.RIGHT, p.CENTER);
-        p.text(`Time left ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/7, p.height/7);
+        p.textAlign(p.RIGHT, p.TOP);
+        p.textLeading(p.height / 15);
+        p.text(`Time left\n ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/15, p.height/8.5);
 
-        p.textSize(p.height / 30);
-        p.textAlign(p.CENTER, p.CENTER);
-        p.text(this.desc, p.width/2, p.height - p.height/7);
+        // p.textSize(p.height / 30);
+        // p.textAlign(p.CENTER, p.CENTER);
+        // p.text(this.desc, p.width/2, p.height - p.height/7);
 
         if (this.suc) {
-            let size = p.calculateImgScale(this.sucImg, p.width/1.5, p.height/1.2);
+            let size = p.calculateImgScale(this.sucImg, p.width/1.1, p.height/1.05);
             p.image(this.sucImg, p.width/2, p.height/2, size.w, size.h);
             return;
         } else if (this.fail) {
-            let size = p.calculateImgScale(this.failImg, p.width/1.5, p.height/1.2);
+            let size = p.calculateImgScale(this.failImg, p.width/1.1, p.height/1.05);
             p.image(this.failImg, p.width/2, p.height/2, size.w, size.h);
             return;
         }
@@ -119,7 +120,7 @@ export default class game {
 
     resize = () => {
         console.log('resize:', this.level, this.posarray)
-        this.img_size = this.p.width/10;
+        this.img_size = this.p.width/6.5;
         if (this.posarray) this.setRandomCardPos(this.cards, this.img_size/1.8, false)
         for (let i=0; i< this.cards.length; i++){
             this.cards[i].setSize(this.img_size);
@@ -129,7 +130,7 @@ export default class game {
 
     setRandomCardPos = (cards, distance, shuffle=true) => {
         let x = 0 + this.p.width/2;
-        let y = (Math.sqrt(3)/2*distance) + this.p.height/2;
+        let y = (Math.sqrt(3)/2*distance) + this.p.height/2 + this.p.height/20;
         let pos = [
                 [x,y], 
                 [x, y-(Math.sqrt(3)*distance)],
@@ -195,10 +196,13 @@ export default class game {
                 this.card_cache = -1;
                 this.card_match ++;
                 if (this.card_match == 5) {
-                    this.suc = true;
+                    
+                    setTimeout(()=>{
+                        this.suc = true;                        
+                    }, 1000);
                     setTimeout(()=>{
                         this.nextLevel();
-                    }, this.waitNext)
+                    }, 1000 + this.waitNext);
                 }
                 return true;
             }

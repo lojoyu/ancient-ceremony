@@ -4,10 +4,12 @@ import game from './scene/game';
 import fontPath from './assets/SourceHanSansHWTC-VF.ttf'
 import bgpat1 from './assets/game/BG 01.png';
 import bgpat2 from './assets/game/BG 02.png';
+import bgpat3 from './assets/game/BG Hex.png';
 import logo from './assets/game/LOGO.png';
 import btn1 from './assets/game/Start button 01.png';
 import btn2 from './assets/game/Start button 02.png';
 import btn3 from './assets/game/FB share.png';
+import lastT from './assets/game/lastTitle.png';
 import organizors from './assets/game/Organizers.png';
 
 export default function sketch(p) {
@@ -15,8 +17,9 @@ export default function sketch(p) {
     let scenes = [];
     let snow = 0;
     let myFont;
+    let boldFont;
     let pg;
-    let level = -1;
+    let level = 4;
     let c1 = p.color(255);
     let c2 = p.color(0);
     let bgpatImg = [];
@@ -25,14 +28,19 @@ export default function sketch(p) {
     let btns = [];
     let toRotate = false;
     let orgImg;
+    let lastTitle;
+    let floating = 0;
+    let floatingd = 1;
 
     p.preload = () => {
         console.log(fontPath, p.loadFont);
-        myFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Regular.woff');
+        myFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Medium.woff');
+        boldFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Bold.woff');
+
         //preload scenes
-        scenes.push(new game(p, p.nextLevel, 1, '第一關  成年之禮', '請配對出南島語族成年禮使用的器物'))
-        scenes.push(new game(p, p.nextLevel, 2, '第二關  交誼之禮', '請配對出南島語族貿易及交換的器物'))
-        scenes.push(new game(p, p.nextLevel, 3, '第三關  心靈之禮', '請配對出南島語族占卜祭祀的器物'))
+        scenes.push(new game(p, p.nextLevel, 1, '第一關  請配對出南島語族成年禮使用的器物', '請配對出南島語族成年禮使用的器物'))
+        scenes.push(new game(p, p.nextLevel, 2, '第二關  請配對出南島語族貿易及交換的器物', '請配對出南島語族貿易及交換的器物'))
+        scenes.push(new game(p, p.nextLevel, 3, '第三關  請配對出南島語族占卜祭祀的器物', '請配對出南島語族占卜祭祀的器物'))
         for (let i=0; i<3; i++) {
             scenes[i].preload();
         }
@@ -40,11 +48,14 @@ export default function sketch(p) {
 
         bgpatImg.push(p.loadImage(bgpat1));
         bgpatImg.push(p.loadImage(bgpat2));
+        bgpatImg.push(p.loadImage(bgpat3));
+
         btnImg.push(p.loadImage(btn1));
         btnImg.push(p.loadImage(btn2));
         btnImg.push(p.loadImage(btn3));
         logoImg = p.loadImage(logo);
         orgImg = p.loadImage(organizors);
+        lastTitle = p.loadImage(lastT);
 
     }
 
@@ -126,24 +137,29 @@ export default function sketch(p) {
             p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
 
             let title_text = "禮器配對挑戰";
-            let challenge_suc_text = "挑戰成功！";
+            let challenge_suc_text = "挑 戰 成 功 !";
             let challenge_fail_text = "挑戰失敗。";
             let content_text = "你真棒！成為南島禮儀的小達人，順利完成配對任務。\n歡迎點擊按鈕分享展覽資訊，一起認識南島的禮儀文化！";
             
             p.textSize(p.height / 15);
             p.textAlign(p.CENTER, p.CENTER);
             p.fill(255);
-            p.text(title_text, p.width/2, p.height/5);
-            p.textSize(p.height/8);
-            p.text(challenge_suc_text, p.width/2, p.height/2.8);
-            p.textSize(p.height/30);
-            p.text(content_text, p.width/2, p.height/1.8);
+            p.imageMode(p.CENTER);
+            let titlesize = p.calculateImgScale(lastTitle, p.width, p.height);
+            p.image(lastTitle, p.width/2, p.height/7, titlesize.w, titlesize.h);
 
-            let btnsize = p.calculateImgScale(btnImg[2], p.width, p.height/6);
-            btns[2].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+
+            p.textSize(p.height/8);
+            p.text(challenge_suc_text, p.width/2, p.height/3.2);
+            p.textSize(p.height/20);
+            p.textLeading(p.height/13);
+            p.text(content_text, p.width/2, p.height/1.9);
+
+            let btnsize = p.calculateImgScale(btnImg[2], p.width, p.height/5);
+            btns[2].draw(p.width/2, p.height/2 + p.height/3.9, btnsize.w, btnsize.h);
 
             let orgSize = p.calculateImgScale(orgImg, p.width/1.5, p.height/1.8);
-            p.image(orgImg, p.width/2, p.height-p.height/9, orgSize.w, orgSize.h);
+            p.image(orgImg, p.width/2, p.height-p.height/15, orgSize.w, orgSize.h);
         }
         //draw scenes
         else if (level > 0) {
@@ -152,38 +168,44 @@ export default function sketch(p) {
         else if (level == -1) {
              //p.image(pg, 0, 0, p.width, p.height);
              let size = p.calculateImgScale2(bgpatImg[0], p.width, p.height);
-             p.image(bgpatImg[0], p.width/2, p.height/2, size.w, size.h);
-             p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
+             p.image(bgpatImg[0], p.width/2, p.height/2 + floating, size.w, size.h);
+             p.image(bgpatImg[1], p.width/2, p.height/2 - floating, size.w, size.h);
              //console.log(logoImg);
              let logosize = p.calculateImgScale(logoImg, p.width, p.height/1.8);
              p.image(logoImg, p.width/2, p.height/2-logosize.h/4, logosize.w, logosize.h);
              
-             let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
+             let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/5);
              //p.image(btnImg[0])
              //console.log(btns);
-             btns[0].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+             btns[0].drawMove(p.width/2, p.height/2 + p.height/3.6, btnsize.w, btnsize.h);
         }
         else if (level == 0) {
 
             let size = p.calculateImgScale2(bgpatImg[0], p.width, p.height);
-            p.image(bgpatImg[0], p.width/2, p.height/2, size.w, size.h);
-            p.image(bgpatImg[1], p.width/2, p.height/2, size.w, size.h);
+            p.image(bgpatImg[0], p.width/2, p.height/2 + floating, size.w, size.h);
+            p.image(bgpatImg[1], p.width/2, p.height/2 - floating, size.w, size.h);
 
             let title_text = "遊戲說明";
             let content_text = "南島語族是注重禮儀的人群，「禮器」是儀式中\n使用的物品，也傳達了南島文化最深層的一面。\n快來挑戰你對南島禮器的認識吧！";
             
-            p.textSize(p.height / 15);
+            p.textFont(boldFont);
+            p.textSize(p.height / 10);
             p.textAlign(p.CENTER, p.CENTER);
             p.fill(255, 255, 255);
             p.text(title_text, p.width/2, p.height/5);
-            p.textSize(p.height / 25);
-            p.textLeading(p.height / 15);
-            p.text(content_text, p.width/2, p.height/2.5);
 
-            let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/6);
-            btns[1].draw(p.width/2, p.height/2 + p.height/4, btnsize.w, btnsize.h);
+            p.textFont(myFont);
+            p.textSize(p.height / 15);
+            p.textLeading(p.height / 12);
+            p.text(content_text, p.width/2, p.height/2.1);
+            p.textFont(boldFont);
+            let btnsize = p.calculateImgScale(btnImg[0], p.width, p.height/5);
+            btns[1].drawMove(p.width/2, p.height/2 + p.height/3.6, btnsize.w, btnsize.h);
 
         }
+        if (floating > p.height/10) floatingd = -1;
+        else if (floating < -p.height/10) floatingd = 1;
+        floating += 0.1 * floatingd;
 
         // p5.image(bg, -p.width/2., -p.height/2.);
         // p.background(200);
@@ -206,6 +228,9 @@ export default function sketch(p) {
             if(btns[1].over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
         }
         else if (scenes[level-1]) scenes[level-1].mousePressed();
+        else if (level == 4) {
+            if(btns[2].over({x: p.mouseX, y: p.mouseY})) window.open('https://www.facebook.com/sharer/sharer.php?u=https://lojoyu.github.io/ancient-ceremony/')
+        }
     }
 
     p.resizeImgScale = (img, w, h) => {
