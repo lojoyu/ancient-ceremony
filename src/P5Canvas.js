@@ -19,7 +19,7 @@ export default function sketch(p) {
     let myFont;
     let boldFont;
     let pg;
-    let level = 4;
+    let level = -1;
     let c1 = p.color(255);
     let c2 = p.color(0);
     let bgpatImg = [];
