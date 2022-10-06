@@ -3,6 +3,7 @@ import { ReactP5Wrapper} from "react-p5-wrapper";
 import styled from "styled-components";
 import sketch from './P5Canvas.js';
 
+
 //window.p5 = p5;
 //import 'p5/lib/addons/p5.play'
 

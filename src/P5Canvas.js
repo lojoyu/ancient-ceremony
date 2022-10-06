@@ -11,6 +11,18 @@ import btn2 from './assets/game/Start button 02.png';
 import btn3 from './assets/game/FB share.png';
 import lastT from './assets/game/lastTitle.png';
 import organizors from './assets/game/Organizers.png';
+import yesurl from './assets/sound/YES.mp3';
+import nourl from './assets/sound/NO.mp3';
+import winnerurl from './assets/sound/WINNER.mp3';
+import loserurl from './assets/sound/LOSER.mp3';
+import fireurl from './assets/game/firework.gif';
+// import * as p5 from "p5"
+// window.p5 = P5
+// import 'p5/lib/addons/p5.sound'
+
+// import "p5js-wrapper/sound"
+// import "react-p5-wrapper/node_modules/p5/lib/addons/p5.sound";
+
 
 export default function sketch(p) {
 
@@ -31,11 +43,23 @@ export default function sketch(p) {
     let lastTitle;
     let floating = 0;
     let floatingd = 1;
+    let yessound, nosound, winnersound, losersound;
+    let gif, gif_createImg;
+
 
     p.preload = () => {
         console.log(fontPath, p.loadFont);
         myFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Medium.woff');
         boldFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Bold.woff');
+
+        gif = p.loadImage(fireurl);
+       // gif_createImg = p.createImg(fireurl);
+
+        //let song = p.loadSound(bgsound);
+        yessound = new Audio(yesurl);
+        nosound = new Audio(nourl);
+        winnersound = new Audio(winnerurl);
+        losersound = new Audio(loserurl);
 
         //preload scenes
         scenes.push(new game(p, p.nextLevel, 1, '第一關  請配對出南島語族成年禮使用的器物', '請配對出南島語族成年禮使用的器物'))
@@ -45,7 +69,6 @@ export default function sketch(p) {
             scenes[i].preload();
         }
         
-
         bgpatImg.push(p.loadImage(bgpat1));
         bgpatImg.push(p.loadImage(bgpat2));
         bgpatImg.push(p.loadImage(bgpat3));
@@ -76,6 +99,8 @@ export default function sketch(p) {
         } else if (level == 4) {
             c2 = p.color(20, 23, 19)
             c1 = p.color(175, 194, 61)
+            gif.setFrame(0);
+            gif.play();
         }
         p.setGradient(0, 0, p.width/2, p.height, c1, c2, true);
         p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1, false);
@@ -116,6 +141,8 @@ export default function sketch(p) {
         for (let i=0; i<btnImg.length; i++) {
             btns.push(new Button(p, 0, 0, 0, 0, btnImg[i]));
         }
+        //bgsound.play();
+        
     }
 
     p.draw = () => {
@@ -148,7 +175,6 @@ export default function sketch(p) {
             let titlesize = p.calculateImgScale(lastTitle, p.width, p.height);
             p.image(lastTitle, p.width/2, p.height/7, titlesize.w, titlesize.h);
 
-
             p.textSize(p.height/8);
             p.text(challenge_suc_text, p.width/2, p.height/3.2);
             p.textSize(p.height/20);
@@ -160,6 +186,15 @@ export default function sketch(p) {
 
             let orgSize = p.calculateImgScale(orgImg, p.width/1.5, p.height/1.8);
             p.image(orgImg, p.width/2, p.height-p.height/15, orgSize.w, orgSize.h);
+
+            p.imageMode(p.CENTER);
+            
+            let gsize = p.calculateImgScale(gif, p.width, p.height);
+            p.image(gif, p.width/2, p.height/2, gsize.w, gsize.h )
+            // console.log(gif_createImg.width, p.width, gsize.w);
+            // gif_createImg.size(50, 50);
+            // gif_createImg.position(0, 0);
+            
         }
         //draw scenes
         else if (level > 0) {
@@ -231,6 +266,19 @@ export default function sketch(p) {
         else if (level == 4) {
             if(btns[2].over({x: p.mouseX, y: p.mouseY})) window.open('https://www.facebook.com/sharer/sharer.php?u=https://lojoyu.github.io/ancient-ceremony/')
         }
+    }
+
+    p.sound = (isCard, isWin)=>{
+        let s;
+        if (isCard) {
+            if (isWin) s = yessound;
+            else s = nosound;
+        } else {
+            if (isWin) s = winnersound;
+            else s = losersound;
+        }
+        s.load();
+        s.play();
     }
 
     p.resizeImgScale = (img, w, h) => {

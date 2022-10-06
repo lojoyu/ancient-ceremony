@@ -111,6 +111,7 @@ export default class game {
             this.count --;
             if (this.count == 0) {
                 this.fail = true;
+                this.p.sound(false, false);      
                 setTimeout(()=>{
                     this.start();
                 }, this.waitNext)
@@ -195,10 +196,12 @@ export default class game {
                 console.log("Pair!!");
                 this.card_cache = -1;
                 this.card_match ++;
+                this.p.sound(true, true);
                 if (this.card_match == 5) {
                     
                     setTimeout(()=>{
-                        this.suc = true;                        
+                        this.suc = true;
+                        this.p.sound(false, true);                   
                     }, 1000);
                     setTimeout(()=>{
                         this.nextLevel();
@@ -207,6 +210,7 @@ export default class game {
                 return true;
             }
             else{ 
+                this.p.sound(true, false);
                 console.log("Not Match!!");
                 //this.card_close = [card_no, Date.now()];
                 this.card_cache2 = true;
