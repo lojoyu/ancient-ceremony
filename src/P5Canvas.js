@@ -45,10 +45,11 @@ export default function sketch(p) {
     let floatingd = 1;
     let yessound, nosound, winnersound, losersound;
     let gif, gif_createImg;
+    let width = 0, height=0;
 
 
     p.preload = () => {
-        console.log(fontPath, p.loadFont);
+
         myFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Medium.woff');
         boldFont = p.loadFont('https://fonts.gstatic.com/ea/notosanstc/v1/NotoSansTC-Bold.woff');
 
@@ -102,6 +103,7 @@ export default function sketch(p) {
             gif.setFrame(0);
             gif.play();
         }
+        
         p.setGradient(0, 0, p.width/2, p.height, c1, c2, true);
         p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1, false);
 
@@ -111,7 +113,10 @@ export default function sketch(p) {
 
     p.setup = () => {
         
-        p.createCanvas(p.windowWidth, p.windowHeight);
+        if (width == 0)
+            p.createCanvas(p.windowWidth, p.windowHeight);
+        else p.createCanvas(width, height);
+        console.log('setup', p.width, p.height);
         //setup scenes
         for (let i =0; i<3; i++) {
             scenes[i].setup();
@@ -127,8 +132,15 @@ export default function sketch(p) {
         
         c2 = p.color(20, 23, 19)
         c1 = p.color(175, 194, 61)
-        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
-        p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
+        if (width == 0) {
+            p.setGradient(-p.width/2, -p.height/2, p.width/2, p.height, c1, c2);
+            p.setGradient(0, -p.height/2, p.width/2, p.height, c2, c1);
+        } else {
+            p.setGradient(0, 0, width/2, height, c1, c2);
+            p.setGradient(width/2, 0, width/2, height, c2, c1);
+        }   
+        // p.setGradient(0, 0, p.width/2, p.height, c1, c2);
+        // p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
 
         bgpatImg[0].loadPixels();
         bgpatImg[1].loadPixels();
@@ -198,6 +210,8 @@ export default function sketch(p) {
         }
         //draw scenes
         else if (level > 0) {
+            let size = p.calculateImgScale2(bgpatImg[2], p.width, p.height);
+            p.image(bgpatImg[2], p.width/2, p.height/2, size.w, size.h);
             scenes[level-1].draw();
         }
         else if (level == -1) {
@@ -255,7 +269,7 @@ export default function sketch(p) {
     };
 
     p.mouseClicked = () => {
-        console.log("Canvas mouse!")
+
         if (level == -1) {
             if(btns[0].over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
         }
@@ -307,12 +321,14 @@ export default function sketch(p) {
         if (props.size && props.size.w != 0 && props.size.h != 0) {
             if (props.size.h > props.size.w) toRotate = true;
             else toRotate = false;
+            console.log(props.size.h, props.size.w);
+            width = props.size.w;
+            height = props.size.h;
             p.resizeCanvas(props.size.w, props.size.h);
             var newPG = p.createGraphics(props.size.w, props.size.h);
             pg = newPG;
             p.setGradient(0, 0, props.size.w/2, props.size.h, c1, c2, true);
             p.setGradient(props.size.w/2, 0, props.size.w/2, props.size.h, c2, c1, false);
-            console.log(toRotate);
             
             if (level > 0 && level < 4) {
                 scenes[level-1].resize();
@@ -328,7 +344,6 @@ export default function sketch(p) {
 
     p.relPosSave = (x, y) => {
         if (p.width == 0 || p.height == 0) return;
-        console.log(y, p.height, y / p.height);
         let percentX = x / p.width;
         let percentY = y / p.height;
         return {x: percentX, y: percentY};

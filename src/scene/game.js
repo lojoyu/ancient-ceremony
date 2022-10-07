@@ -19,7 +19,7 @@ export default class game {
     }
 
     preload = () => {
-        console.log('Game preload')
+
         let p = this.p;
         let level = this.level;
 
@@ -30,6 +30,7 @@ export default class game {
 
         this.sucImg = p.loadImage(`Chap ${level}/Success.png`);
         this.failImg = p.loadImage(`Chap ${level}/Fail.png`);
+        console.log(this.sucImg);
         
         let c = 'A';
         if (this.level == 2) c = 'B'
@@ -44,7 +45,7 @@ export default class game {
     }
 
     setup = () => {
-        console.log('Game setup')
+
         this.sucImg.loadPixels();
         this.failImg.loadPixels();
         for (let i=0; i< this.back.length; i++){
@@ -80,7 +81,7 @@ export default class game {
     
         let p = this.p;
         for (let i=0; i< this.cards.length; i++){
-            this.cards[i].draw();
+            this.cards[i].draw(0, this.sucImg);
         }
         p.fill(255);
         p.textSize(p.height / 18);
@@ -91,9 +92,9 @@ export default class game {
         p.textLeading(p.height / 15);
         p.text(`Time left\n ${this.count > 9 ? this.count : "0"+this.count} sec`, p.width - p.width/15, p.height/8.5);
 
-        // p.textSize(p.height / 30);
-        // p.textAlign(p.CENTER, p.CENTER);
-        // p.text(this.desc, p.width/2, p.height - p.height/7);
+        p.textSize(p.height / 30);
+        p.textAlign(p.CENTER, p.CENTER);
+        p.text(this.desc, p.width/2, p.height - p.height/7);
 
         if (this.suc) {
             let size = p.calculateImgScale(this.sucImg, p.width/1.1, p.height/1.05);
@@ -120,7 +121,7 @@ export default class game {
     }
 
     resize = () => {
-        console.log('resize:', this.level, this.posarray)
+
         this.img_size = this.p.width/6.5;
         if (this.posarray) this.setRandomCardPos(this.cards, this.img_size/1.8, false)
         for (let i=0; i< this.cards.length; i++){
@@ -148,7 +149,6 @@ export default class game {
         if (shuffle) {
             this.shuffleArray(this.posarray);
         }
-        console.log(this.posarray);
         for (let i=0; i< cards.length; i++){
             cards[i].setPos(pos[this.posarray[i]]);
         }
@@ -171,7 +171,6 @@ export default class game {
         for (let i=0; i< cards.length; i++){
             if (cards[i].checkIfChoosed(point)){
                 card_num = i;
-                console.log("Card no:" + card_num);
             }
         }
         
@@ -191,9 +190,9 @@ export default class game {
         }
         else{
             
-            console.log(this.card_cache, card_no, this.cards[card_no].getCardMatchNum(), this.cards[this.card_cache].getCardMatchNum() );
+
             if (this.cards[card_no].getCardMatchNum() == this.cards[this.card_cache].getCardMatchNum()) {
-                console.log("Pair!!");
+
                 this.card_cache = -1;
                 this.card_match ++;
                 this.p.sound(true, true);
@@ -211,7 +210,7 @@ export default class game {
             }
             else{ 
                 this.p.sound(true, false);
-                console.log("Not Match!!");
+
                 //this.card_close = [card_no, Date.now()];
                 this.card_cache2 = true;
                 setTimeout(()=>{

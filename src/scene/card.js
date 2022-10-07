@@ -29,9 +29,7 @@ export default class card {
         }
         else{
             p.image(this.card, this.cardPos[0], this.cardPos[1], this.image_size.width, this.image_size.height);
-        }
-
-        
+        }   
     }
 
     calImageScale = (image_width) => {
@@ -54,7 +52,6 @@ export default class card {
         //     }else{
         //         this.isBack = true;
         //     }
-            
         // }
     }
 
