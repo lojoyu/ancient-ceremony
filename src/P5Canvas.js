@@ -132,13 +132,14 @@ export default function sketch(p) {
         
         c2 = p.color(20, 23, 19)
         c1 = p.color(175, 194, 61)
-        if (width == 0) {
-            p.setGradient(-p.width/2, -p.height/2, p.width/2, p.height, c1, c2);
-            p.setGradient(0, -p.height/2, p.width/2, p.height, c2, c1);
-        } else {
-            p.setGradient(0, 0, width/2, height, c1, c2);
-            p.setGradient(width/2, 0, width/2, height, c2, c1);
-        }   
+        // if (width == 0) {
+        //     // p.setGradient(-p.width/2, -p.height/2, p.width/2, p.height, c1, c2);
+        //     // p.setGradient(0, -p.height/2, p.width/2, p.height, c2, c1);
+            
+        // } else {
+        p.setGradient(0, 0, p.width/2, p.height, c1, c2);
+        p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
+        // }   
         // p.setGradient(0, 0, p.width/2, p.height, c1, c2);
         // p.setGradient(p.width/2, 0, p.width/2, p.height, c2, c1);
 
@@ -321,7 +322,7 @@ export default function sketch(p) {
         if (props.size && props.size.w != 0 && props.size.h != 0) {
             if (props.size.h > props.size.w) toRotate = true;
             else toRotate = false;
-            console.log(props.size.h, props.size.w);
+            //alert(props.size.h + ', ' +props.size.w);
             width = props.size.w;
             height = props.size.h;
             p.resizeCanvas(props.size.w, props.size.h);

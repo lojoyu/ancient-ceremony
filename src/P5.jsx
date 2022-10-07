@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useLayoutEffect} from 'react';
 import { ReactP5Wrapper} from "react-p5-wrapper";
 import styled from "styled-components";
 import sketch from './P5Canvas.js';
@@ -23,24 +23,38 @@ const ItemContainer = styled.div`
 //     width: 100%;
 //   }
 
+function useWindowSize() {
+    const [size, setSize] = useState([0, 0]);
+    useLayoutEffect(() => {
+      function updateSize() {
+        setSize([window.innerWidth, window.innerHeight]);
+      }
+      window.addEventListener('resize', updateSize);
+      updateSize();
+      return () => window.removeEventListener('resize', updateSize);
+    }, []);
+    return size;
+  }
+  
+
 export function P5() {
     const canvasRef = useRef(null)
     const [size, setSize] = useState({ w: 0, h: 0})
+    const [width, height] = useWindowSize();
+    // const resized = () => {
+    //     setSize({ w: canvasRef.current.clientWidth, h: canvasRef.current.clientHeight })
+    // }
 
-    const resized = () => {
-        setSize({ w: canvasRef.current.clientWidth, h: canvasRef.current.clientHeight })
-    }
-
-    useEffect(resized, [])
-    useEffect(() => {
-        console.log('resize')
-        window.addEventListener('resize', resized);
-        return () => window.removeEventListener('resize', resized);
-    });
+    // useEffect(resized, [])
+    // useEffect(() => {
+    //     console.log('resize')
+    //     window.addEventListener('resize', resized);
+    //     return () => window.removeEventListener('resize', resized);
+    // });
 
     return (
     <ItemContainer ref={canvasRef}>
-        <ReactP5Wrapper sketch={sketch} size={size} />
+        <ReactP5Wrapper sketch={sketch} size={{w: width, h:height}} />
     </ItemContainer>
     )  ;
 }
