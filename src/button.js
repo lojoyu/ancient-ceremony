@@ -11,6 +11,19 @@ export default class Button {
     this.offd = 1;
   }
 
+  drawText(x, y, w, h) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h * 2;
+    console.log(this.img);
+    this.p.textSize(h);
+    this.p.text(this.img, x, y);
+    // this.p.fill(255)
+    //         this.p.textSize(this.p.height/25);
+    //         this.p.text('再試一次', this.p.width/2 - this.p.width/10, this.p.height/2 + this.p.height/3.9);
+  }
+
   drawMove(x, y, w, h) {
     this.x = x;
     this.y = y;

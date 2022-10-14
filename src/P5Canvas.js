@@ -16,6 +16,8 @@ import nourl from './assets/sound/NO.mp3';
 import winnerurl from './assets/sound/WINNER.mp3';
 import loserurl from './assets/sound/LOSER.mp3';
 import fireurl from './assets/game/firework.gif';
+import musicbtnurl from './assets/game/music.png';
+
 // import * as p5 from "p5"
 // window.p5 = P5
 // import 'p5/lib/addons/p5.sound'
@@ -38,6 +40,7 @@ export default function sketch(p) {
     let logoImg;
     let btnImg = [];
     let btns = [];
+    let musicBtn, musicImg, retryBtn;
     let toRotate = false;
     let orgImg;
     let lastTitle;
@@ -81,13 +84,14 @@ export default function sketch(p) {
         orgImg = p.loadImage(organizors);
         lastTitle = p.loadImage(lastT);
 
+        musicImg = p.loadImage(musicbtnurl);
     }
 
     p.nextLevel = () => {
         //level += 1;
 
-        level += 1;
-
+        if (level < 4) level += 1;
+        else level = 0;
         if (level == 1) {
             c2 = p.color(0, 0, 40);
             c1 = p.color(127, 127, 183);
@@ -116,7 +120,7 @@ export default function sketch(p) {
         if (width == 0)
             p.createCanvas(p.windowWidth, p.windowHeight);
         else p.createCanvas(width, height);
-        console.log('setup', p.width, p.height);
+
         //setup scenes
         for (let i =0; i<3; i++) {
             scenes[i].setup();
@@ -150,10 +154,14 @@ export default function sketch(p) {
         btnImg[2].loadPixels();
         logoImg.loadPixels();
         orgImg.loadPixels();
+        musicImg.loadPixels();
+        musicBtn = new Button(p, 0, 0, 0, 0, musicImg);
 
         for (let i=0; i<btnImg.length; i++) {
             btns.push(new Button(p, 0, 0, 0, 0, btnImg[i]));
         }
+
+        retryBtn = new Button(p, 0, 0, 0, 0, '再試一次');
         //bgsound.play();
         
     }
@@ -196,6 +204,18 @@ export default function sketch(p) {
 
             let btnsize = p.calculateImgScale(btnImg[2], p.width, p.height/5);
             btns[2].draw(p.width/2, p.height/2 + p.height/3.9, btnsize.w, btnsize.h);
+
+            // p.fill(0)
+            // p.rectMode(p.CENTER);
+            // p.rect(p.width/2 - p.width/10, p.height/2 + p.height/3.9, p.height/25 * 4, p.height/25 * 2);
+            // p.fill(255)
+            // p.textSize(p.height/25);
+            // p.text('再試一次', p.width/2 - p.width/10, p.height/2 + p.height/3.9);
+            
+            retryBtn.drawText(p.width/2 - p.width/10, p.height/2 + p.height/3.9, p.width/30 * 4, p.height/30);
+            // text('word', 10, 60);
+            // fill(0, 102, 153, 51);
+            // text('word', 10, 90);
 
             let orgSize = p.calculateImgScale(orgImg, p.width/1.5, p.height/1.8);
             p.image(orgImg, p.width/2, p.height-p.height/15, orgSize.w, orgSize.h);
@@ -257,6 +277,8 @@ export default function sketch(p) {
         else if (floating < -p.height/10) floatingd = 1;
         floating += 0.1 * floatingd;
 
+        let msize = p.calculateImgScale(musicImg, p.width/30, p.height/18);
+        musicBtn.draw(p.width - p.width/30, p.height/18, msize.w, msize.h);
         // p5.image(bg, -p.width/2., -p.height/2.);
         // p.background(200);
         // p.normalMaterial();
@@ -271,6 +293,12 @@ export default function sketch(p) {
 
     p.mouseClicked = () => {
 
+        
+        if (musicBtn && musicBtn.over({x: p.mouseX, y: p.mouseY})) {
+            let bgm = document.getElementById('bgmusic')
+            if (!bgm.paused) bgm.pause();
+            else bgm.play();
+        }
         if (level == -1) {
             if(btns[0].over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
         }
@@ -280,6 +308,7 @@ export default function sketch(p) {
         else if (scenes[level-1]) scenes[level-1].mousePressed();
         else if (level == 4) {
             if(btns[2].over({x: p.mouseX, y: p.mouseY})) window.open('https://www.facebook.com/sharer/sharer.php?u=https://lojoyu.github.io/ancient-ceremony/')
+            if (retryBtn.over({x: p.mouseX, y: p.mouseY})) p.nextLevel();
         }
     }
 

@@ -8,7 +8,7 @@ export default class game {
         this.cards = [];
         this.back = [];
         this.pos = [];
-        this.waitNext = 2000;
+        this.waitNext = 4000;
         this.turnback = 800;
         this.title = title;
         this.nextLevel = nextLevel;
@@ -30,7 +30,6 @@ export default class game {
 
         this.sucImg = p.loadImage(`Chap ${level}/Success.png`);
         this.failImg = p.loadImage(`Chap ${level}/Fail.png`);
-        console.log(this.sucImg);
         
         let c = 'A';
         if (this.level == 2) c = 'B'
@@ -94,7 +93,7 @@ export default class game {
 
         p.textSize(p.height / 30);
         p.textAlign(p.CENTER, p.CENTER);
-        p.text(this.desc, p.width/2, p.height - p.height/7);
+        //p.text(this.desc, p.width/2, p.height - p.height/7);
 
         if (this.suc) {
             let size = p.calculateImgScale(this.sucImg, p.width/1.1, p.height/1.05);
